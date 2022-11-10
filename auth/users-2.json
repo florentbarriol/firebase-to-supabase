@@ -1,0 +1,24 @@
+[
+  {
+    "uid": "vm0ntMcvkZOqa7uOF8d6SDwR0BG2",
+    "email": "florent.barriol@gmail.com",
+    "emailVerified": true,
+    "displayName": "florent Barriol",
+    "disabled": false,
+    "metadata": {
+      "lastSignInTime": "Thu, 27 Oct 2022 18:54:26 GMT",
+      "creationTime": "Fri, 07 Jan 2022 13:33:13 GMT"
+    },
+    "passwordHash": "Tgaj5Vj98COBRFsAYpaAHtSkBf6pT_wrCUlTrjINZRLnfTrsSoUV-EvINItFMOxaw0ErIkuZsxmHu2rsiG5YUA==",
+    "passwordSalt": "TWnDTL8PjBksGQ==",
+    "tokensValidAfterTime": "Thu, 13 Jan 2022 18:09:55 GMT",
+    "providerData": [
+      {
+        "uid": "florent.barriol@gmail.com",
+        "displayName": "florent Barriol",
+        "email": "florent.barriol@gmail.com",
+        "providerId": "password"
+      }
+    ]
+  }
+]

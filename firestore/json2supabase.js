@@ -90,7 +90,7 @@ function main(filename) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log("analyzing fields in " + filename);
+                    console.log("analyzing fields in ".concat(filename));
                     return [4 /*yield*/, getFields(filename)];
                 case 1:
                     fields = _a.sent();
@@ -104,15 +104,15 @@ function main(filename) {
                     });
                     // parse table name from filename / path
                     tableName = filename.replace(/\\/g, '/').split('/').pop().split('.')[0].replace('.json', '');
-                    console.log("creating destination table for " + filename);
+                    console.log("creating destination table for ".concat(filename));
                     return [4 /*yield*/, createTable(tableName, fields)];
                 case 2:
                     tableCreationResult = _a.sent();
-                    console.log("loading data for " + filename);
+                    console.log("loading data for ".concat(filename));
                     return [4 /*yield*/, loadData()];
                 case 3:
                     result = _a.sent();
-                    console.log("done processing " + filename);
+                    console.log("done processing ".concat(filename));
                     quit();
                     return [2 /*return*/];
             }
@@ -128,7 +128,7 @@ function createTable(tableName, fields) {
         return __generator(this, function (_a) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
                     client.connect();
-                    client.query("select column_name, data_type, character_maximum_length, column_default, is_nullable\n        from INFORMATION_SCHEMA.COLUMNS where table_schema = 'public' and table_name = '" + tableName + "'", function (err, res) {
+                    client.query("select column_name, data_type, character_maximum_length, column_default, is_nullable\n        from INFORMATION_SCHEMA.COLUMNS where table_schema = 'public' and table_name = '".concat(tableName, "'"), function (err, res) {
                         var _a;
                         if (err) {
                             quit();
@@ -141,15 +141,15 @@ function createTable(tableName, fields) {
                                     // get data_type from rows
                                     var dataType = (_a = res.rows.find(function (row) { return row.column_name === attr; })) === null || _a === void 0 ? void 0 : _a.data_type;
                                     if (!dataType) {
-                                        console.log("field not found in " + tableName + " table: " + attr);
+                                        console.log("field not found in ".concat(tableName, " table: ").concat(attr));
                                         quit();
-                                        reject("field not found in " + tableName + " table: " + attr);
+                                        reject("field not found in ".concat(tableName, " table: ").concat(attr));
                                     }
                                     // check to see if data_type is correct
                                     if (attr === primary_key_name ? getKeyType(primary_key_strategy) === dataType : dataType !== fields[attr]) {
-                                        console.log("data type mismatch for field " + attr + ": " + dataType + ", " + fields[attr]);
+                                        console.log("data type mismatch for field ".concat(attr, ": ").concat(dataType, ", ").concat(fields[attr]));
                                         quit();
-                                        reject("data type mismatch for field " + attr + ": " + dataType + ", " + fields[attr]);
+                                        reject("data type mismatch for field ".concat(attr, ": ").concat(dataType, ", ").concat(fields[attr]));
                                     }
                                 };
                                 for (var attr in fields) {
@@ -158,12 +158,12 @@ function createTable(tableName, fields) {
                                 resolve('table exists');
                             }
                             else {
-                                var sql_1 = "create table \"" + tableName + "\" (";
+                                var sql_1 = "create table \"".concat(tableName, "\" (");
                                 if (primary_key_strategy !== 'none') {
-                                    sql_1 += createPrimaryKey(primary_key_strategy) + ",";
+                                    sql_1 += "".concat(createPrimaryKey(primary_key_strategy), ",");
                                 }
                                 for (var attr in fields) {
-                                    sql_1 += "\"" + attr + "\" " + fields[attr] + ", ";
+                                    sql_1 += "\"".concat(attr, "\" ").concat(fields[attr], ", ");
                                 }
                                 sql_1 = sql_1.slice(0, -2);
                                 sql_1 += ')';
@@ -209,8 +209,8 @@ function getFields(filename) {
                                 fields[attr] = typeof value[attr];
                             }
                             if ((fields[attr] !== typeof value[attr]) && fields[attr] !== 'object' && value[attr] !== null) {
-                                console.log("multiple field types found for field " + attr + ": " + fields[attr] + ", " + typeof value[attr]);
-                                console.log("casting " + attr + " to type object (JSONB)");
+                                console.log("multiple field types found for field ".concat(attr, ": ").concat(fields[attr], ", ").concat(typeof value[attr]));
+                                console.log("casting ".concat(attr, " to type object (JSONB)"));
                                 fields[attr] = 'object';
                                 // quit();
                                 // reject(`multiple field types found for field ${attr}: ${fields[attr]}, ${typeof value[attr]}`);
@@ -254,17 +254,17 @@ function loadData() {
                                             if (typeof val === 'object' || fields[attr] === 'jsonb')
                                                 val = JSON.stringify(val);
                                             if (typeof val === 'undefined') {
-                                                sql += (sql.length > 1 ? ',' : '') + "null";
+                                                sql += "".concat(sql.length > 1 ? ',' : '', "null");
                                             }
                                             else if (fields[attr] !== 'numeric' && fields[attr] !== 'boolean') {
-                                                sql += (sql.length > 1 ? ',' : '') + "'" + val.replace(/'/g, "''") + "'";
+                                                sql += "".concat(sql.length > 1 ? ',' : '', "'").concat(val.replace(/'/g, "''"), "'");
                                             }
                                             else {
-                                                sql += "" + (sql.length > 1 ? ',' : '') + value[attr];
+                                                sql += "".concat(sql.length > 1 ? ',' : '').concat(value[attr]);
                                             }
                                         }
                                         if (primary_key_strategy === 'firestore_id') {
-                                            sql += ",'" + value.firestore_id + "'";
+                                            sql += ",'".concat(value.firestore_id, "'");
                                         }
                                         sql += ')';
                                         insertRows.push(sql);
@@ -301,12 +301,12 @@ function loadData() {
 function makeInsertStatement(fields, insertRows) {
     var fieldList = '';
     for (var attr in fields) {
-        fieldList += (fieldList.length > 0 ? ',' : '') + "\"" + attr + "\"";
+        fieldList += "".concat(fieldList.length > 0 ? ',' : '', "\"").concat(attr, "\"");
     }
     if (primary_key_strategy === 'firestore_id') {
-        fieldList += "," + primary_key_name;
+        fieldList += ",".concat(primary_key_name);
     }
-    var sql = "insert into \"" + tableName + "\" (" + fieldList + ") values " + insertRows.join(',');
+    var sql = "insert into \"".concat(tableName, "\" (").concat(fieldList, ") values ").concat(insertRows.join(','));
     fs.writeFileSync('temp.sql', sql, 'utf8');
     return sql;
 }
@@ -369,15 +369,15 @@ function createPrimaryKey(primary_key_strategy) {
         case 'none':
             return '';
         case 'serial':
-            return "\"" + primary_key_name + "\" SERIAL PRIMARY KEY";
+            return "\"".concat(primary_key_name, "\" SERIAL PRIMARY KEY");
         case 'smallserial':
-            return "\"" + primary_key_name + "\" SMALLSERIAL PRIMARY KEY";
+            return "\"".concat(primary_key_name, "\" SMALLSERIAL PRIMARY KEY");
         case 'bigserial':
-            return "\"" + primary_key_name + "\" BIGSERIAL PRIMARY KEY";
+            return "\"".concat(primary_key_name, "\" BIGSERIAL PRIMARY KEY");
         case 'uuid':
-            return "\"" + primary_key_name + "\" UUID PRIMARY KEY DEFAULT uuid_generate_v4()";
+            return "\"".concat(primary_key_name, "\" UUID PRIMARY KEY DEFAULT uuid_generate_v4()");
         case 'firestore_id':
-            return "\"" + primary_key_name + "\" TEXT PRIMARY KEY";
+            return "\"".concat(primary_key_name, "\" TEXT PRIMARY KEY");
         default:
             return '';
     }
